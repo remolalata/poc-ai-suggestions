@@ -1,38 +1,43 @@
-.App {
-  text-align: center;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+    @apply bg-gray-50 text-gray-700;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.chatbox {
+    @apply h-52 overflow-y-auto mt-4 border rounded-md p-3;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.chatbox p {
+    @apply mb-2 text-sm text-gray-700
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.chatbox p:last-of-type {
+    @apply mb-0
 }
 
-.App-link {
-  color: #61dafb;
+/* Custom Scrollbar */
+.chatbox::-webkit-scrollbar {
+    width: 6px;
+    /* Set the width of the scrollbar */
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.chatbox::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    /* Set the background of the scrollbar track */
+}
+
+.chatbox::-webkit-scrollbar-thumb {
+    background-color: #888;
+    /* Set the color of the scrollbar thumb */
+    border-radius: 10px;
+    /* Add rounded corners to the scrollbar thumb */
+}
+
+.chatbox::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    /* Set the color of the scrollbar thumb on hover */
 }
