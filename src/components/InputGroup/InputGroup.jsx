@@ -18,7 +18,9 @@ const InputGroup = ({
     const [aiInputValue, setAIInputValue] = useState("");
 
     const [messages, setMessages] = useState([]);
-    const [suggestions, setSuggestions] = useState([]);
+    const [suggestions, setSuggestions] = useState([
+        ...(id === "title" ? ["I want to get my teammates excited about innovation. Can you suggest some interesting titles to describe it in 60 characters or less?"] : ["I am pitching an idea to help drive innovation for the team. Can you suggest a paragraph to describe it in 250 characters or less?"])
+    ]);
 
     const popoverId = state.showPopover[id];
 
@@ -31,6 +33,12 @@ const InputGroup = ({
     const inputChangeHandler = (event) => {
         const { value } = event.target;
         setInputValue(value);
+
+        if (id === "title") {
+            setSuggestions([`Rewrite this title "${value}" so it will resonate with business leadership`]);
+        } else {
+            setSuggestions([`Rewrite this title "${value}" so it will resonate with business leadership`]);
+        }
     }
 
     const aiInputChangeHandler = (event) => {
@@ -73,6 +81,13 @@ const InputGroup = ({
 
             setMessages(prevMessages => [...prevMessages, assistantMessage]);
             setAIInputValue("");
+            const suggestions = [
+                "Make it concise",
+                "Make it attention grabbing",
+                ...(id === "title" ? ["Make it 60 characters or less"] : ["Make it 250 characters or less"])
+            ];
+
+            setSuggestions(suggestions);
         } catch (error) {
             console.error("Error generating chat response:", error);
         }
@@ -110,23 +125,6 @@ const InputGroup = ({
         setMessages([]);
     }
 
-    useEffect(() => {
-        if (inputValue.trim()) {
-            if (id === "title") {
-                setSuggestions(prevSuggestions => [...prevSuggestions, `Rewrite this title "${inputValue}" so it will resonate with business leadership`])
-            } else {
-                setSuggestions(prevSuggestions => [...prevSuggestions, `Rewrite this "${inputValue}" so it's clear and concise`])
-            }
-        }
-    }, [inputValue]);
-
-    useEffect(() => {
-        const uniqueSuggestions = [...new Set(suggestions)];
-        if (uniqueSuggestions.length !== suggestions.length) {
-            setSuggestions(uniqueSuggestions);
-        }
-    }, [suggestions]);
-
     return (
         <div className="flex flex-col space-y-2">
             <div className="flex items-center gap-x-3">
@@ -155,7 +153,7 @@ const InputGroup = ({
                                     {suggestions.length ?
                                         <div className="mb-3">
                                             {suggestions.map((suggestion, index) =>
-                                                <button key={index} type="button" className="text-left bg-gray-200 text-gray-800 p-1 rounded text-sm font-semibold" onClick={() => makeSuggestionHandler(suggestion)}>{suggestion}</button>
+                                                <button key={index} type="button" className="mr-1 mb-1 text-left bg-gray-200 text-gray-800 p-1 rounded text-sm font-semibold" onClick={() => makeSuggestionHandler(suggestion)}>{suggestion}</button>
                                             )}
                                         </div>
                                         : null
@@ -199,7 +197,7 @@ const InputGroup = ({
                 ? <textarea
                     id={label.toLowerCase()}
                     name={label.toLowerCase()}
-                    rows="4"
+                    rows="8"
                     className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:border-blue-300"
                     placeholder={placeholder}
                     value={inputValue}
