@@ -8,7 +8,7 @@ body {
 }
 
 .chatbox {
-    @apply h-52 overflow-y-auto mt-4 border rounded-md p-3;
+    @apply h-60 max-h-60 overflow-y-auto mt-4 border rounded-md p-3;
 }
 
 .chatbox p {
