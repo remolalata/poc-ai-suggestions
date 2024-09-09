@@ -158,7 +158,7 @@ export const AppProvider = ({ children }) => {
         "I want to get my teammates excited about innovation. Can you suggest some interesting title to describe it in 60 characters or less?"
       ],
       refinement: [
-        "Rewrite this title"
+        "Rewrite the title so it will resonate with business leadership"
       ],
       ongoing: [
         "Make it concise"
@@ -169,7 +169,7 @@ export const AppProvider = ({ children }) => {
         "I am pitching an idea to help drive innovation for the team. Can you suggest a paragraph to describe it in 250 characters or less?"
       ],
       refinement: [
-        "Rewrite this description"
+        "Rewrite the description so it will resonate with business leadership"
       ],
       ongoing: [
         "Make it catchy"

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
+import React, { useContext, useEffect, useState, useRef, useCallback } from "react";
 import { AppContext } from "../../context/AppContext";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -38,17 +38,17 @@ const InputGroup = ({
         setInputValue(value);
     };
 
-    const closeHandler = (id) => {
+    const closeHandler = useCallback((id) => {
         if (id) {
             dispatch({ type: "SET_POPOVER", payload: { [id]: false } });
         }
-    };
+    }, [dispatch]);
 
-    const handleClickOutside = (event) => {
+    const handleClickOutside = useCallback((event) => {
         if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
             closeHandler(id);
         }
-    };
+    }, [id, closeHandler]);
 
     const sendHandler = async () => {
         if (!inputValue.trim()) return;
@@ -158,7 +158,22 @@ const InputGroup = ({
         const systemMessage = { role: "system", content: state.aiParameters.systemMessage };
         const messages = (id === "title") ? state.titleMessage : state.descMessage;
 
-        const newMessage = { role: "user", content: text };
+        let newMessage = {};
+
+        if (text.toLowerCase().includes("rewrite")) {
+            newMessage = {
+                role: "user",
+                ...(id === "title"
+                    ? {
+                        content: `Rewrite this title '${state.titleValue}'. Based on this title and the following prompt from the user: '${text}', generate a related title that matches both the title and the user's request.`
+                    }
+                    : {
+                        content: `The user has provided the title: '${state.descValue}'. Based on this title and the following prompt from the user: '${text}', generate a related description that matches both the description and the user's request.`
+                    })
+            }
+        } else {
+            newMessage = { role: "user", content: text };
+        }
 
         let rawMessages = [...state.message, newMessage];
         let updatedMessages = [newMessage];
@@ -180,7 +195,7 @@ const InputGroup = ({
 
         try {
             const response = await generateChatResponse({
-                messages: [...rawMessages, newMessage],
+                messages: [...new Set([...rawMessages, newMessage])],
                 maxTokens: state.aiParameters.maxTokens,
                 temperature: state.aiParameters.temperature,
                 topP: state.aiParameters.topP,
@@ -220,7 +235,7 @@ const InputGroup = ({
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [popoverId]);
+    }, [popoverId, handleClickOutside]);
 
     useEffect(() => {
         if (chatboxRef.current) {
